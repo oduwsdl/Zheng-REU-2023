@@ -28,7 +28,9 @@ def get_portion_of_html_with_instagram_page_info(soup, timestamp):
 		#find tag with no attributes
 		if (timestamp < 20140123000000) and (not bool(tag.attrs)):
 			text=tag.contents[0]
-			#print(text)
+			if 'window._jscalls' not in text:
+				continue
+			#print(text, file=sys.stderr)
 			if timestamp<20130225000000:
 				pattern=re.compile('^[\s\S]+window._jscalls[\s\S]+init",\[([\s\S]+),"AnonymousUser",\{"anonymous":[a-z]+\},\[([\s\S]+)')
 				m=pattern.match(text)
@@ -459,4 +461,4 @@ if __name__ == "__main__":
 	#print(instagram_page_dict_final, file=sys.stderr)		
 	#print('\u2601\uFE0F')
 	#write_instagram_page_info_to_json(filename+'.json', instagram_page_dict_final)
-	json.dump(instagram_page_dict_final, sys.stdout)			
+	json.dump(instagram_page_dict_final, sys.stdout, indent=4)			

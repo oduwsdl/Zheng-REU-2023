@@ -1,0 +1,18 @@
+example1 - https://web.archive.org/web/20121107120456/http://instagram.com:80/nike
+example2 - https://web.archive.org/web/20121109180504/http://instagram.com:80/cristiano
+example3 -https://web.archive.org/web/20130302082057/http://instagram.com:80/JLo
+example4 - https://web.archive.org/web/20130303005841/http://instagram.com:80/justinbieber/
+example5 - https://web.archive.org/web/20130330083642/http://instagram.com/natgeo
+example6 - https://web.archive.org/web/20130413231747/http://instagram.com/natgeo
+example7 - https://web.archive.org/web/20140123084304/http://instagram.com/beyonce
+example8 - https://web.archive.org/web/20150111133704/http://instagram.com/arianagrande
+example9 - https://web.archive.org/web/20150610015653/https://instagram.com/arianagrande/
+example10 - https://web.archive.org/web/20150618183911/https://instagram.com/arianagrande/
+example11 - https://web.archive.org/web/20150830215950/https://instagram.com/mileycyrus/
+example12 - https://web.archive.org/web/20160414100146/https://www.instagram.com/arianagrande/
+example13 - https://web.archive.org/web/20160528174321/https://www.instagram.com/kendalljenner/
+example14 - https://web.archive.org/web/20170214033011/https://www.instagram.com/beyonce/
+example15 - https://web.archive.org/web/20170222172036/https://www.instagram.com/instagram/
+example16 - https://web.archive.org/web/20180314071459/https://www.instagram.com/beyonce/
+example17 - https://web.archive.org/web/20180417203507/https://www.instagram.com/cristiano/
+example18 - https://web.archive.org/web/20180608183155/https://www.instagram.com/kyliejenner/
