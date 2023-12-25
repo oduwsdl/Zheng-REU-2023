@@ -472,7 +472,4 @@ if __name__ == "__main__":
 	html = response.text
 	soup = BeautifulSoup(html, "lxml")
 	get_instagram_page_dict(soup, instagram_page_dict_final, instagram_username, timestamp)
-	#print(instagram_page_dict_final, file=sys.stderr)		
-	#print('\u2601\uFE0F')
-	#write_instagram_page_info_to_json(filename+'.json', instagram_page_dict_final)
 	json.dump(instagram_page_dict_final, sys.stdout, indent=4)			
