@@ -6,4 +6,5 @@ The Python script takes the URI-M as a command line argument. For example, if yo
 python instagram_memento_scraper.py --urim https://web.archive.org/web/20170214033011/https://www.instagram.com/beyonce/
 ```
 ## Code Output
+The Instagram memento scraper outputs a JSON object, which can be interpreted as a Python dictionary. The output JSON object contains two main keys, "userProfile" and "userMedia." The value of the key "userProfile" is a dictionary that contains basic information
 
