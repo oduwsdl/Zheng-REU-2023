@@ -5,7 +5,7 @@ import re
 import argparse
 import sys
 
-def write_instagram_page_info_to_jsonl(filename, user_profile, posts):
+def write_instagram_page_info_to_jsonl(filename: str, user_profile, posts):
 	with open(filename, "w") as outfile:
 		user_profile_str=json.dumps(user_profile)
 		outfile.write(user_profile_str + "\n")
@@ -21,7 +21,10 @@ def write_instagram_page_info_to_json(filename, dict):
 	return
 
 #helper function for case 1, case 2, case 3
-def get_portion_of_html_with_instagram_page_info(soup, timestamp):
+def get_portion_of_html_with_instagram_page_info(soup, timestamp: int):
+	'''
+	Extracts portion of html with the relevant information and returns it as a string
+	'''
 	script_tag = soup.find_all('script') 
 	for tag in script_tag:
 		text = tag.contents
@@ -30,7 +33,6 @@ def get_portion_of_html_with_instagram_page_info(soup, timestamp):
 			text=tag.contents[0]
 			if 'window._jscalls' not in text:
 				continue
-			#print(text, file=sys.stderr)
 			if timestamp<20130225000000:
 				pattern=re.compile('^[\s\S]+window._jscalls[\s\S]+init",\[([\s\S]+),"AnonymousUser",\{"anonymous":[a-z]+\},\[([\s\S]+)')
 				m=pattern.match(text)
@@ -52,21 +54,14 @@ def get_portion_of_html_with_instagram_page_info(soup, timestamp):
 				pattern=re.compile('^window._sharedData[\s\S]+\{("canSeePrerelease":[\s\S]+"user":\{[\s\S]*)\}\]\},"country_code')
 				m=pattern.findall(text[0])
 				return m
-			# elif 20150610000000<=timestamp<20150630000000:
-			# 	pattern=re.compile('^window._sharedData[\s\S]+"user":\{([\s\S]+"media":\{[\s\S]*)\},"__path":')
-			# 	m=pattern.findall(text[0])
-			# 	return m
-			# else:
-			# 	#print(text[0], file=sys.stderr)
-			# 	#pattern=re.compile('^window._sharedData[\s\S]+"user":\{([\s\S]+"media":\{[\s\S]*)\}\}\]\},"hostname":')
-			# 	#m=pattern.findall(text[0])
-			# 	#return m
-			# 	return text[0].strip('window._sharedData = ')[:-1]
 			elif 20150610000000<=timestamp:
 				return text[0].strip('window._sharedData = ')[:-1]
 
 #helper functions for case 1 
-def get_user_profile_dict_1(m, instagram_page_dict_temp, timestamp):
+def get_user_profile_dict_1(m, instagram_page_dict_temp: dict, timestamp:int):
+	'''
+	Get portion of html that contains basic user information
+	'''
 	if timestamp<=20130225000000:
 		user_profile_string=m[0]
 		user_profile_dict = json.loads(user_profile_string)
@@ -77,19 +72,28 @@ def get_user_profile_dict_1(m, instagram_page_dict_temp, timestamp):
 	elif timestamp>=20130413000000:
 		return instagram_page_dict_temp['user']
 
-def clean_user_profile_dict(user_profile_dict):
+def clean_user_profile_dict(user_profile_dict: dict):
+	'''
+	Get status code of the user profile picture, edit the dictionary to contain this information, and return the edited dictionary
+	'''
 	pic_link=user_profile_dict['profile_picture']
 	profile_pic_status_code=get_resource_status_code(pic_link)
 	user_profile_dict['profile_picture']={'uri':pic_link, 'status_code': profile_pic_status_code}
 	return user_profile_dict
 
-def split_posts(post_html, timestamp):
+def split_posts(post_html:str, timestamp:int):
+	'''
+	Get portion of html containing relevant information on instagram posts associated with the urim
+	'''
 	if timestamp<20121109000000:
 		return re.split(',\{"location|,\[\{"location', post_html)
 	else:
 		return re.split(',\{"can_delete_comments|,\[\{"can_delete_comments', post_html)
 	
-def post_to_dict(post_info, timestamp):
+def post_to_dict(post_info: str, timestamp:int):
+	'''
+	Take string of post information, converts it to a dict, and returns that dict
+	'''
 	if timestamp<20121109000000:
 		if not post_info.startswith('{"location'):
 			post_info='{"location'+post_info
@@ -109,7 +113,6 @@ def post_to_dict(post_info, timestamp):
 	return post_dict
 
 def clean_post_dict(post_dict):
-	#print(post_dict.keys(), file=sys.stderr)
 	try:
 		comments_list=post_dict['comments']['data']
 		for comment in comments_list:
@@ -164,7 +167,7 @@ def case1(soup, instagram_page_dict_final, timestamp):
 	else:
 		posts=instagram_page_dict_temp['userMedia']
 
-	count=1
+	count=1 #count keeps track of what post the code is currently on
 	for post_info in posts:
 		print('post count:', count, file=sys.stderr)
 		if timestamp<=20130225000000:
@@ -174,7 +177,6 @@ def case1(soup, instagram_page_dict_final, timestamp):
 		clean_post_dict(post_dict)
 		instagram_page_dict_final['userMedia'].append(post_dict)	
 		count+=1
-	#return instagram_page_dict_final
 
 #helper functions for case 2
 def get_bio_and_profile_pic_uri(soup):
@@ -230,7 +232,6 @@ def get_links_to_posts(soup):
 def get_list_of_posts(soup):
 	post_list=[]
 	x=get_links_to_posts(soup)
-	#print(x, file=sys.stderr)
 	for i in soup.findAll('script', type="text/javascript"):
 		if len(i.contents)!=0 and i.contents[0].startswith('window._sharedData'):
 			text=i.contents[0].rstrip(';')
@@ -256,7 +257,7 @@ def get_list_of_posts(soup):
 				count+=1
 			return post_list
 		
-def case2(soup, instagram_page_dict_final, username):
+def case2(soup, instagram_page_dict_final:dict, username:str):
 	#user profile
 	profileUser={}
 	profileUser['username']=username #username
@@ -271,8 +272,12 @@ def case2(soup, instagram_page_dict_final, username):
 
 	#user media
 	instagram_page_dict_final['userMedia']=get_list_of_posts(soup)
-	
-def get_media_type(post, timestamp):
+
+#helper function for case 3	
+def get_media_type(post:dict, timestamp:int):
+	'''
+	Returns the media type of a post
+	'''
 	if timestamp<20170214000000:
 		if post['is_video']:
 			return 'video'
@@ -290,8 +295,7 @@ def get_media_type(post, timestamp):
 def case3(soup, instagram_page_dict_final, timestamp):
 	
 	m=get_portion_of_html_with_instagram_page_info(soup, timestamp)
-	#print(x, file=sys.stderr)
-	x=json.loads(m)
+	x=json.loads(m) #turn m into dicitionary
 	instagram_page_dict_temp=x['entry_data']['ProfilePage'][0]['user']
 	
 	#user profile
@@ -347,7 +351,6 @@ def case3(soup, instagram_page_dict_final, timestamp):
 
 def case4(soup, instagram_page_dict_final):
 	m=get_portion_of_html_with_instagram_page_info(soup, timestamp)
-	#print(x, file=sys.stderr)
 	x=json.loads(m)
 	instagram_page_dict_temp=x['entry_data']['ProfilePage'][0]['graphql']['user']
 	
@@ -365,9 +368,7 @@ def case4(soup, instagram_page_dict_final):
 	profileUser['count']={'media': media_count, 'followed_by': followed_by, 'follows': follows}
 	profileUser['id']=instagram_page_dict_temp['id']
 	profileUser['isVerified']=instagram_page_dict_temp['is_verified']
-	#print(instagram_page_dict_temp.keys(), file=sys.stderr)
 	if 'has_highlight_reel' in instagram_page_dict_temp.keys():
-		#print('yay', file=sys.stderr)
 		profileUser['has_highlight_reel']=instagram_page_dict_temp['has_highlight_reel']
 		
 	if 'highlight_reel_count' in instagram_page_dict_temp.keys():
@@ -380,7 +381,6 @@ def case4(soup, instagram_page_dict_final):
 		print('post count:', count, file=sys.stderr)
 		post=post['node']
 		post_dict={}
-		#if 'comments_disabled' in post.keys():
 		post_dict['comments_disabled']=post['comments_disabled']
 
 		post_dict['comments']=post['edge_media_to_comment']
@@ -411,26 +411,40 @@ def case4(soup, instagram_page_dict_final):
 		count+=1
 
 def get_resource_status_code(uri):
-	return requests.get(uri).status_code
+	try:
+		return requests.get(uri).status_code
+	except:
+		print("Unable to get the status code of", uri)
+		return None
 
-#not written yet
-def is_on_live_instagram(uri):
-	pass
+def get_instagram_page_dict(soup, instagram_page_dict_final: dict, username: str, timestamp: int):
+	'''
+	Passes the instagram_page_dict_final and Beautiful Soup object to the relevant case based on timestamp
 
-def get_instagram_page_dict(soup, instagram_page_dict_final, username, timestamp):
+	soup: Beautiful Soup object that contains the html of the urim
+	instagram_page_dict_final: dictionary that will hold the information extracted from the html of the urim
+	username: instagram handle associated with the urim
+	timestamp: time associated with the urim
+
+	returns nothing
+	'''
+
 	#before Jan 11, 2015
 	if timestamp<20150111000000:
 		case1(soup, instagram_page_dict_final, timestamp)
+	#Jan 11, 2015 to June 9 2015
 	elif 20150111000000<=timestamp<20150610000000:
 		try:
 			case2(soup, instagram_page_dict_final, username)
-		except:
+		except Exception as e:
 			if 20150226000000<=timestamp<20150227000000:
 				case1(soup, instagram_page_dict_final, timestamp)
 			else: 
-				raise Exception
+				raise e
+	#June 10, 2015 to Mar 11, 2018
 	elif 20150610000000<=timestamp<20180312000000:
 		case3(soup, instagram_page_dict_final, timestamp)
+	#Mar 11, 2018 to Jun 8, 2018 (may work for later dates but no guarantee)
 	else:
 		case4(soup, instagram_page_dict_final)
 
@@ -441,14 +455,15 @@ if __name__ == "__main__":
 	args=parser.parse_args()
 	URIM=args.urim
 	print(URIM, file=sys.stderr)
+	#extract instagram handle from urim
 	pattern=re.compile('instagram.com[:80]*\/([A-Za-z0-9._]+)')
 	instagram_username=pattern.findall(URIM)[0]
 
 
 	pattern=re.compile('^https:\/\/web.archive.org\/web\/([0-9]+)/')
 	m=pattern.match(URIM)
-	timestamp=int(m.groups()[0])
-	instagram_page_dict_final={'profileUser':{}, 'userMedia':[]}
+	timestamp=int(m.groups()[0]) #timestamp format: year(4)month(2)day(2)hour(2)minute(2)second(2)
+	instagram_page_dict_final={'profileUser':{}, 'userMedia':[]} #final dictionary that contains all the information scraped from the urim
 	if (20130225000000 <= timestamp < 20130302000000) or (20130412000000<=timestamp<20130413000000) or (20180312000000<=timestamp<20180314000000):
 		print('This timestamp has not been tested. The script may not work for this timestamp.', file=sys.stderr)
 		exit()
@@ -456,7 +471,6 @@ if __name__ == "__main__":
 	response = requests.get(URIM)
 	html = response.text
 	soup = BeautifulSoup(html, "lxml")
-	#print(soup)
 	get_instagram_page_dict(soup, instagram_page_dict_final, instagram_username, timestamp)
 	#print(instagram_page_dict_final, file=sys.stderr)		
 	#print('\u2601\uFE0F')
