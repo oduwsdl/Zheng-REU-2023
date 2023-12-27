@@ -12,3 +12,6 @@ The Instagram memento scraper outputs a JSON object, which can be interpreted as
 python instagram_memento_scraper.py --urim https://web.archive.org/web/20170214033011/https://www.instagram.com/beyonce/ > example14.json
 ```
 The full output for this example can be found at https://github.com/rachelzheng03/ODU_REU_2023/blob/main/instagram_memento_scraper/example_outputs/example14.json.
+
+## Acknowledgements and Additional Resources
+This project was part of the [2023 ODU NSF REU Site in Disinformation Detection and Analytics](https://oducsreu.github.io/)
