@@ -11,7 +11,7 @@ The Instagram memento scraper outputs a JSON object, which can be interpreted as
 ```ps
 python instagram_memento_scraper.py --urim https://web.archive.org/web/20170214033011/https://www.instagram.com/beyonce/ > example14.json
 ```
-The full output for this example can be found at https://github.com/rachelzheng03/ODU_REU_2023/blob/main/instagram_memento_scraper/example_outputs/example14.json.
+The full output for this example can be found at [example14.json](instagram_memento_scraper/example_outputs/example14.json).
 
 ## References
 * Haley Bragg, Himarsha R. Jayanetti, Michael L. Nelson, and Michele C. Weigle, ["Less than 4% of Archived Instagram Account Pages for the Disinformation Dozen are Replayable"](https://www.cs.odu.edu/~mweigle/papers/bragg-jcdl2023-preprint.pdf), In *Proceedings of the ACM/IEEE Joint Conference on Digital Libraries (JCDL)*, June 2023, short paper
