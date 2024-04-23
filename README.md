@@ -19,7 +19,7 @@ python instagram_memento_scraper.py --urim https://web.archive.org/web/201702140
 The full output for this example can be found at [example14.json](instagram_memento_scraper/example_outputs/example14.json).
 
 ## References
-* Rachel Zheng and Michele C. Weigle, "Examining the Challenges in Archiving Instagram", tech report, *to be published 2024*
+* Rachel Zheng and Michele C. Weigle, "Examining the Challenges in Archiving Instagram", Technical report arXiv:2401.02029, arXiv, January 2024, https://arxiv.org/abs/2401.02029.
 
 ## Acknowledgements
 This project was part of the 2023 [ODU NSF REU Site in Disinformation Detection and Analytics](https://oducsreu.github.io/).
